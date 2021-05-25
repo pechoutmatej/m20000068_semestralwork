@@ -1,0 +1,3 @@
+Značka Model SPZ Cena na Km Cena plné nádrže Typ paliva
+Skoda Superb 1l11111 3.32 1595.0 Nafta
+BMW E36 2l22222 4.4 1450.0 Nafta
