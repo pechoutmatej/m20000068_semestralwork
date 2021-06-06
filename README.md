@@ -18,7 +18,7 @@ Program umožňuje z dvojce .csv souborů načíst vozy s informacemi o nich a c
 
 **Class diagram**
 
-![Class Diagram](https://github.com/pechoutmatej/m20000068_semestralwork/tree/main/Images)
+![Class Diagram](https://github.com/pechoutmatej/m20000068_semestralwork/blob/main/Images/img.PNG)
 
 **Popis struktury souboru**
 
