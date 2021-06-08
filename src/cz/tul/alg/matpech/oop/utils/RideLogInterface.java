@@ -1,7 +1,9 @@
 package cz.tul.alg.matpech.oop.utils;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import cz.tul.alg.matpech.oop.model.Car;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public interface RideLogInterface {
@@ -41,9 +43,11 @@ public interface RideLogInterface {
 
     String sortByDryPrice();
 
-    void savePricesToBin(String binFile);
+    void savePricesToBin(String binFile) throws IOException;
 
     void readPricesFromBin(String binFile) throws IOException;
 
-    void saveCalcToBin(String binFile);
+    void saveCalcToBin(String binFile) throws IOException;
+
+    String readCalcFromBin(String binFile) throws FileNotFoundException, IOException;
 }
