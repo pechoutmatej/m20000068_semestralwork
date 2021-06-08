@@ -1,5 +1,6 @@
 package cz.tul.alg.matpech.oop.model;
 
+
 import cz.tul.alg.matpech.oop.utils.RideLogInterface;
 
 import javax.mail.*;
@@ -47,7 +48,7 @@ public class RideLog implements RideLogInterface {
      * @throws IOException Compulsory exception
      */
     @Override
-    public void loadCars(String carsFile) throws IOException {
+    public void loadCars(String carsFile) throws FileNotFoundException, IOException {
         cars = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(new File(carsFile))))
         {
@@ -61,15 +62,13 @@ public class RideLog implements RideLogInterface {
                 double fuelTankSize = Double.parseDouble(parts[3]);
                 double kmCosts = Double.parseDouble(parts[4]);
                 int fuelType = Integer.parseInt(parts[5]);
-                if(parts[6].matches("^[\\d][ASULKHEPCJBMTZ][\\d][\\d][\\d][\\d][\\d]"))
+                if(parts[6].matches("^[\\d][ASULKHEPCJBMTZ][^GOQW](4*[\\d])"))
                 {
                     String spz = parts[6]; //přidat regex
                     c = new Car(manufacturer, model, consumption, fuelTankSize, kmCosts, fuelType, spz);
                     cars.add(c);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -79,7 +78,7 @@ public class RideLog implements RideLogInterface {
      * @throws IOException Compulsory exception
      */
     @Override
-    public void loadPrices(String priceFile) throws IOException {
+    public void loadPrices(String priceFile) throws FileNotFoundException, IOException {
         try(BufferedReader br = new BufferedReader(new FileReader(new File(priceFile))))
         {
             String line;
@@ -345,13 +344,12 @@ public class RideLog implements RideLogInterface {
      * Method used to create .bin file with prices of fuel
      * @param binFile savefile name
      */
-    public void savePricesToBin(String binFile) {
+    @Override
+    public void savePricesToBin(String binFile) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(binFile))) {
             for (Double price : prices) {
                 dos.writeDouble(price);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -360,7 +358,8 @@ public class RideLog implements RideLogInterface {
      * @param binFile name of file
      * @throws IOException compulsory
      */
-    public void readPricesFromBin(String binFile) throws IOException {
+    @Override
+    public void readPricesFromBin(String binFile) throws FileNotFoundException, IOException {
         int i = 0;
         try(DataInputStream din = (new DataInputStream(new FileInputStream(new File(binFile)))))
         {
@@ -381,19 +380,68 @@ public class RideLog implements RideLogInterface {
      * Saveing calculations to binary file
      * @param binFile filename
      */
-    public void saveCalcToBin(String binFile)
+    @Override
+    public void saveCalcToBin(String binFile) throws IOException
     {
         calculateAll();
+        int length = 0;
         try(DataOutputStream dos = new DataOutputStream(new FileOutputStream(binFile)))
         {
             for(Car car : cars)
             {
-                dos.writeBytes(car.getManufacturer());
-                dos.writeUTF(car.getModel());
+                length = car.getManufacturer().length();
+                dos.writeInt(length);
+                for(int i = 0; i<length; i++)
+                {
+                    dos.writeChar(car.getManufacturer().charAt(i));
+                }
+                length = car.getModel().length();
+                dos.writeInt(length);
+                for(int i = 0; i<length; i++)
+                {
+                    dos.writeChar(car.getModel().charAt(i));
+                }
                 dos.writeDouble(car.getRange());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
+
+    public String readCalcFromBin(String binFile) throws FileNotFoundException, IOException {
+        int length = 0;
+        StringBuilder manufacturer = new StringBuilder();
+        StringBuilder model = new StringBuilder();
+        double range;
+        StringBuilder result = new StringBuilder();
+        try(DataInputStream din = (new DataInputStream(new FileInputStream(new File(binFile)))))
+        {
+            boolean end = false;
+            while(!end){
+                try {
+                    length = din.readInt();
+                    manufacturer.setLength(0);
+                    for(int i = 0; i < length; i++)
+                    {
+                        manufacturer.append(din.readChar());
+                    }
+                    length = din.readInt();
+                    model.setLength(0);
+                    for(int i = 0; i < length; i++)
+                    {
+                        model.append(din.readChar());
+                    }
+                    range = din.readDouble();
+                    result.append(manufacturer);
+                    result.append(" ");
+                    result.append(model);
+                    result.append(" ");
+                    result.append(range);
+                    result.append("\n");
+                } catch(EOFException e){
+                    end = true;
+                }
+            }
+        }
+        return result.toString();
+    }
+
 }
