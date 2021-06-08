@@ -10,9 +10,7 @@ Program umožňuje z dvojce .csv souborů načíst vozy s informacemi o nich a c
 2. Načíst ceny paliv
 3. Přidat auto
 4. Změnit cenu paliv
-5. Seřadit auta
-  1. Dle ceny na 1 km
-  2. Dle dojezdu
+5. Seřadit auta (Dle ceny na 1km/ dle dojezdu)
 6. Zaslat email s individuálním výpočtem
 7. Uložit výpočty aktuálních aut
 
@@ -28,7 +26,16 @@ _Výrobce, Model, Spotřeba, Velikost nádrže, Ostatní náklady na jízdu, Typ
 
 V souboru s palivy je pouze jeden řádek a jeho struktura je následující.
 
-_Benzín, Nafta, Ethanol, Benzín 100, LPG¨_
+_Benzín, Nafta, Ethanol, Benzín 100, LPG_
+
+Ceny paliv jsou načítány z .bin souboru, kde jsou data seřazena za sebou ve stejném pořádí jako v .txt souboru a čtena jsou jako datový typ double
+
+Výstupní textový soubor má na prvním řádku hlavičku:  
+_Značka Model SPZ Cena na Km Cena plné nádrže Typ paliva_  
+Pod ní jsou seřazena data všech načtených aut ve stejném pořádí jako hlavička  
+
+Výstupní binární soubor má jednotlivá auta seřazená za sebou:  
+_Výrobce Model Dojezd_
 
 **Testování**
 
