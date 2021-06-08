@@ -27,6 +27,7 @@ public class Main {
             if(choice.equals("1"))
             {
                 dataLoad();
+
             }
             else if(choice.equals("2"))
             {
@@ -43,7 +44,18 @@ public class Main {
             else if(choice.equals("5"))
             {
                 saveToFile();
-
+                try {
+                    rideLog.saveCalcToBin("./data/testbin.bin");
+                    System.out.println(rideLog.readCalcFromBin("./data/testbin.bin"));
+                }
+                catch(FileNotFoundException ex)
+                {
+                    System.out.println("Soubor nenalezen");
+                }
+                catch(IOException ex)
+                {
+                    System.out.println("Nastala chyba");
+                }
             }
             else if(choice.equals("6"))
             {
@@ -196,8 +208,14 @@ public class Main {
             if(fileChoice.equals("0")) {
                 System.out.println("Zadej soubor pro zápis, bez koncovky");
                 resultFile = sc.next();
-                rideLog.calculateAll();
-                rideLog.saveCalculations("./data/" + resultFile + ".txt");
+                try {
+                    rideLog.calculateAll();
+                    rideLog.saveCalculations("./data/" + resultFile + ".txt");
+                }
+                catch (IOException ex)
+                {
+                    System.out.println("Nastala chyba");
+                }
             }
             else if(fileChoice.equals("1"))
             {
